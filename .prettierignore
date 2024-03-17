@@ -1,0 +1,4 @@
+*.json
+dist
+public
+node_modules

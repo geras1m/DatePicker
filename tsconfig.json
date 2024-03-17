@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "baseUrl": ".",
+    "noImplicitAny": true,
+    "module": "ESNext",
+    "target": "es6",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "alwaysStrict": true,
+    "strictNullChecks": false,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "types": ["node"],
+    "declaration": true,
+    "declarationDir": "types",
+    "paths": {
+      "@root/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@appTypes/*": ["./src/types/*"],
+    }
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+  ],
+  "exclude": ["node_modules"]
+}
