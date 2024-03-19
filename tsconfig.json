@@ -22,6 +22,8 @@
       "@assets/*": ["./src/assets/*"],
       "@constants/*": ["./src/constants/*"],
       "@appTypes/*": ["./src/types/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@hocs/*": ["./src/hocs/*"]
     }
   },
   "ts-node": {
@@ -32,6 +34,7 @@
   "include": [
     "./src/**/*.ts",
     "./src/**/*.tsx",
+    "src/types/declaringImageFormats.d.ts"
   ],
   "exclude": ["node_modules"]
 }
