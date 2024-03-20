@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const ErrorText = styled.p`
-  width: 100%;
+  max-width: 250px;
   font-size: 14px;
   text-align: center;
   color: red;

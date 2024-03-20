@@ -26,5 +26,5 @@ export const CellWrapper = styled.li<ICellWrapperProps>`
 
   ${({ $isSelectedDay }) => $isSelectedDay && 'border: 1px solid'}
 
-  ${({ $isSelectedMonth }) => $isSelectedMonth && 'color: #AAAAAA'}
+  ${({ $isSelectedMonth }) => !$isSelectedMonth && 'color: #AAAAAA'}
 `;

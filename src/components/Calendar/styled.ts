@@ -1,4 +1,10 @@
+import { calendarView } from '@root/constants';
+import { CalendarView } from '@root/types';
 import styled from 'styled-components';
+
+interface IDaysListProps {
+  $view: CalendarView;
+}
 
 export const WrapperCalendar = styled.div`
   width: 250px;
@@ -8,11 +14,30 @@ export const WrapperCalendar = styled.div`
   box-sizing: border-box;
 `;
 
-export const DaysList = styled.ul`
+export const DaysList = styled.ul<IDaysListProps>`
   display: grid;
   padding: 0;
   justify-content: space-between;
   justify-items: center;
-  grid-template-rows: repeat(6, 1fr);
-  grid-template-columns: repeat(7, 1fr);
+
+  ${({ $view }) =>
+    $view === calendarView.month &&
+    `
+    grid-template-rows: repeat(6, 1fr);
+    grid-template-columns: repeat(7, 1fr);
+  `}
+
+  ${({ $view }) =>
+    $view === calendarView.year &&
+    `
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+  `}
+
+  ${({ $view }) =>
+    $view === calendarView.week &&
+    `
+    grid-template-rows: repeat(1, 1fr);
+    grid-template-columns: repeat(7, 1fr);
+  `}
 `;
