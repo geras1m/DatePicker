@@ -67,6 +67,8 @@
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",
     "import/prefer-default-export": "off",
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "react-hooks/rules-of-hooks": "warn",
+    "react/jsx-props-no-spreading": "warn"
   }
 }

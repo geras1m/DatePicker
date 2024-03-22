@@ -40,3 +40,11 @@ export const ClearButton = styled.button`
   background-color: transparent;
   cursor: pointer;
 `;
+
+export const ErrorText = styled.p`
+  max-width: 250px;
+  font-size: 14px;
+  text-align: center;
+  color: red;
+  margin: 0;
+`;

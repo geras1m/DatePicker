@@ -21,21 +21,23 @@ export const monthMap = [
 interface INavigationBar {
   year: number;
   month: number;
-  setNextMonth: () => void;
-  setPrevMonth: () => void;
+  switchCalendar: (direction: 'next' | 'prev') => void;
 }
 
-export const NavigationBar = memo(({ year, month, setNextMonth, setPrevMonth }: INavigationBar) => {
+export const NavigationBar = memo(({ year, month, switchCalendar }: INavigationBar) => {
+  const switchToNext = () => switchCalendar('next');
+  const switchToPrev = () => switchCalendar('prev');
+
   return (
     <NavigationWrapper>
       <NavButton>
-        <PrevArrow onClick={setPrevMonth} />
+        <PrevArrow onClick={switchToPrev} />
       </NavButton>
       <MonthAndYear>
         {monthMap[month]} {year}
       </MonthAndYear>
       <NavButton>
-        <NextArrow onClick={setNextMonth} />
+        <NextArrow onClick={switchToNext} />
       </NavButton>
     </NavigationWrapper>
   );

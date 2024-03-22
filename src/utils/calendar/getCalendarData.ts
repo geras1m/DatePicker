@@ -1,10 +1,13 @@
 import { listOfMonth } from '@root/constants';
+import { ICalendarDate, IInputDate } from '@root/types';
 import { getCurrentDate } from '@utils/calendar/getCurrentDate';
 
 const overDaysInMonth = 32;
 const countCellsInMonth = 42;
+const maxWeeksInMonth = 6;
+const daysInAWeek = 7;
 
-export const getCalendarDataForMonth = (year: number, month: number) => {
+export const getCalendarDataForMonth = (year: number, month: number): ICalendarDate[] => {
   const { currentYear, currentMonth, currentDate } = getCurrentDate();
 
   const daysInPrevMonth = overDaysInMonth - new Date(year, month - 1, overDaysInMonth).getDate();
@@ -20,7 +23,7 @@ export const getCalendarDataForMonth = (year: number, month: number) => {
     .map((date, index) => {
       return {
         date: date - index,
-        month: month + 1,
+        month: month - 1,
         isActive: false,
         dayOfWeek: countDaysInPrevMonth - index,
         isCurrent: false,
@@ -60,12 +63,14 @@ export const getCalendarDataForMonth = (year: number, month: number) => {
   return [...daysPrevMonth, ...daysCurrentMonth, ...daysNextMonth];
 };
 
-export const getCalendarDataForYear = (year: number) => {
+export const getCalendarDataForYear = (year: number, inputDate: IInputDate | null) => {
   const { currentYear, currentMonth } = getCurrentDate();
 
-  return listOfMonth.map((month) => {
-    const isCurrent = year === currentYear && currentMonth === month.id - 1;
-    return { ...month, isCurrent };
+  return listOfMonth.map((monthData) => {
+    const isCurrent = year === currentYear && currentMonth === monthData.month;
+    const isSelected = inputDate && inputDate.month === monthData.month + 1 && inputDate.year === year;
+
+    return { ...monthData, isCurrent, isSelected };
   });
 };
 
@@ -74,8 +79,9 @@ export const getCalendarDataForWeek = (year: number, month: number, currentDay: 
   const currentDayIndex = allDaysOfMonth.findIndex((day) => {
     return day.year && day.date === currentDay;
   });
-  for (let i = 0; i < 6; i += 1) {
-    if (i * 7 >= currentDayIndex) return allDaysOfMonth.splice((i - 1) * 7, 7);
+  for (let weekInMonth = 0; weekInMonth < maxWeeksInMonth; weekInMonth += 1) {
+    if (weekInMonth * daysInAWeek > currentDayIndex)
+      return allDaysOfMonth.splice((weekInMonth - 1) * daysInAWeek, daysInAWeek);
   }
   return [];
 };
