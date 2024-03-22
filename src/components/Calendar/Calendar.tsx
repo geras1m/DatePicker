@@ -3,7 +3,7 @@ import { NameDaysOfWeek } from '@components/Calendar/NameDaysOfWeek';
 import { NavigationBar } from '@components/Calendar/NavigationBar';
 import { DaysList, WrapperCalendar } from '@components/Calendar/styled';
 import { calendarView } from '@root/constants';
-import { CalendarView, ICalendarDate } from '@root/types';
+import { CalendarView, IInputDate } from '@root/types';
 import {
   getCalendarDataForMonth,
   getCalendarDataForWeek,
@@ -11,78 +11,63 @@ import {
 } from '@utils/calendar/getCalendarData';
 import { memo, useCallback, useMemo, useState } from 'react';
 
-export interface ICalendar {
-  // minDate: number;
-  // maxDate: number;
+export interface ICalendarProps {
   view: CalendarView;
-  inputDate: ICalendarDate | null;
+  inputDate: IInputDate | null;
+  maxDate: Date;
+  minDate: Date;
 }
 
-export const Calendar = memo(({ inputDate, view = 'week' }: ICalendar) => {
+// TODO: тудушки сделать здесь в календаре
+
+export const Calendar = memo(({ inputDate, maxDate, minDate, view = 'week' }: ICalendarProps) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const selectedYear = selectedDate.getFullYear();
+  const selectedMonth = selectedDate.getMonth();
 
   useMemo(() => {
     if (inputDate) setSelectedDate(new Date(`${inputDate.month}/${inputDate.day}/${inputDate.year}`));
   }, [inputDate]);
 
-  const selectedYear = selectedDate.getFullYear();
-  const selectedMonth = selectedDate.getMonth();
+  const handleSwitchNextOrPrevCalendar = useCallback(
+    (direction: 'next' | 'prev') => {
+      const DirectionValue = direction === 'next' ? 1 : -1;
 
-  const setPrevMonth = useCallback(() => {
-    let year = selectedDate.getFullYear();
-    let month = selectedDate.getMonth();
-    let day = selectedDate.getDate();
-    if (view === calendarView.year) year -= 1;
-    if (view === calendarView.month) month -= 1;
-    if (view === calendarView.week) day -= 7;
+      let year = selectedDate.getFullYear();
+      let month = selectedDate.getMonth();
+      let day = selectedDate.getDate();
 
-    setSelectedDate(() => new Date(year, month, day));
-  }, [selectedDate, view]);
+      if (view === calendarView.year) year += 1 * DirectionValue;
+      if (view === calendarView.month) month += 1 * DirectionValue;
+      if (view === calendarView.week) day += 7 * DirectionValue;
 
-  const setNextMonth = useCallback(() => {
-    let year = selectedDate.getFullYear();
-    let month = selectedDate.getMonth();
-    let day = selectedDate.getDate();
-    if (view === calendarView.year) year += 1;
-    if (view === calendarView.month) month += 1;
-    if (view === calendarView.week) day += 7;
+      const resultDate = new Date(year, month, day);
 
-    setSelectedDate(() => new Date(year, month, day));
-  }, [selectedDate, view]);
+      if (resultDate < minDate || resultDate > maxDate) return;
 
-  const getCalendarItemsForMonth = () => {
-    const calendarDays = getCalendarDataForMonth(selectedYear, selectedMonth);
-
-    return calendarDays.map(({ year, month, date, isCurrent, isActive }) => {
-      const isSelectedDay =
-        inputDate && inputDate.year === year && inputDate.month - 1 === month && inputDate.day === date;
-
-      return (
-        <DaysCell
-          key={`${date}${month}${year}`}
-          isMainCell={isActive}
-          isSelected={isSelectedDay}
-          isCurrent={isCurrent}
-          content={date}
-        />
-      );
-    });
-  };
-
-  // TODO: обработчик событий, который по клику на месяц откроет месячный календарь
+      setSelectedDate(() => new Date(year, month, day));
+    },
+    [selectedDate, view],
+  );
 
   const getCalendarItemsForYear = () => {
-    const calendarMonth = getCalendarDataForYear(selectedYear);
+    const calendarMonth = getCalendarDataForYear(selectedYear, inputDate);
 
-    return calendarMonth.map(({ month, isCurrent, id }) => {
-      return <DaysCell key={id} isMainCell isSelected={false} isCurrent={isCurrent} content={month} />;
+    return calendarMonth.map(({ month, isCurrent, name, isSelected }) => {
+      return <DaysCell key={month} isMainCell isSelected={isSelected} isCurrent={isCurrent} content={name} />;
     });
   };
 
-  const getCalendarItemsForWeek = () => {
-    const calendarWeek = getCalendarDataForWeek(selectedYear, selectedMonth, selectedDate.getDate());
+  const getCalendarCells = () => {
+    if (calendarView.year === view) return getCalendarItemsForYear();
 
-    return calendarWeek.map(({ year, month, date, isCurrent, isActive }) => {
+    const calendarItemsData =
+      calendarView.month === view
+        ? getCalendarDataForMonth(selectedYear, selectedMonth)
+        : getCalendarDataForWeek(selectedYear, selectedMonth, selectedDate.getDate());
+
+    return calendarItemsData.map(({ year, month, date, isCurrent, isActive }) => {
       const isSelectedDay =
         inputDate && inputDate.year === year && inputDate.month - 1 === month && inputDate.day === date;
 
@@ -97,25 +82,20 @@ export const Calendar = memo(({ inputDate, view = 'week' }: ICalendar) => {
       );
     });
   };
-
-  getCalendarDataForWeek(selectedYear, selectedMonth, selectedDate.getDate());
 
   return (
     <WrapperCalendar>
       <NavigationBar
-        setPrevMonth={setPrevMonth}
-        setNextMonth={setNextMonth}
+        switchCalendar={handleSwitchNextOrPrevCalendar}
         year={selectedYear}
         month={calendarView.year !== view && selectedMonth}
       />
 
       {calendarView.year !== view && <NameDaysOfWeek />}
 
-      <DaysList $view={view}>
-        {calendarView.month === view && getCalendarItemsForMonth()}
-        {calendarView.year === view && getCalendarItemsForYear()}
-        {calendarView.week === view && getCalendarItemsForWeek()}
-      </DaysList>
+      <DaysList $view={view}>{getCalendarCells()}</DaysList>
+
+      {/* {здесь кнопка и добавление туду} */}
     </WrapperCalendar>
   );
 });

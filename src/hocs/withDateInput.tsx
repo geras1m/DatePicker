@@ -1,56 +1,68 @@
+import { ICalendarProps } from '@components/Calendar/Calendar';
 import { DateInput } from '@components/DateInput';
-import { ErrorMessage } from '@components/DateInput/ErrorMessage';
-import { ICalendarDate } from '@root/types';
+import { ErrorText } from '@components/DateInput/styled';
+import { IDatePickerConfig, IInputDate } from '@root/types';
 import { isValidateDate } from '@utils/calendar/isValidDate';
 import { ChangeEvent, ComponentType, useState } from 'react';
 
-const maxValueLength = 10;
+const maxInputValueLength = 10;
 
-export const WithDateInput = (Component: ComponentType<{ inputDate: null | ICalendarDate }>) => {
-  const [inputValue, setInputValue] = useState('');
-  const [calendarDate, setCalendarDate] = useState<null | ICalendarDate>(null);
+export const withDateInput = (Component: ComponentType<ICalendarProps>, config: IDatePickerConfig) => {
+  return function ComponentWithDateInput() {
+    const { view, maxDate, minDate } = config;
+    const [inputValue, setInputValue] = useState('');
+    const [calendarDate, setCalendarDate] = useState<null | IInputDate>(null);
 
-  const handleOnChangeValue = (event: ChangeEvent<HTMLInputElement>) => {
-    let { value } = event.target;
+    const handleOnChangeValue = (event: ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      if (value.length > 10) return;
+      const dateFromValue = value.split('/').join('');
 
-    if (value.length > 10) return;
+      const getFormatValue = () => {
+        if (dateFromValue.length > 4) {
+          return `${dateFromValue.slice(0, 2)}/${dateFromValue.slice(2, 4)}/${dateFromValue.slice(4)}`;
+        }
+        if (dateFromValue.length > 2) {
+          return `${dateFromValue.slice(0, 2)}/${dateFromValue.slice(2)}`;
+        }
+        return dateFromValue;
+      };
 
-    value = value.split('/').join('');
+      setInputValue(() => getFormatValue());
+    };
 
-    if (value.length > 4) value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4)}`;
-    else if (value.length > 2) value = `${value.slice(0, 2)}/${value.slice(2)}`;
+    const handleClearInput = () => {
+      setInputValue('');
+      setCalendarDate(null);
+    };
 
-    setInputValue(() => value);
+    const handleSetUserDate = () => {
+      const [day, month, year] = inputValue.split('/');
+      const parseDate = new Date(Number(year), Number(month) - 1, Number(day));
+      const isValidDate = isValidateDate(inputValue) && !(parseDate < minDate || parseDate > maxDate);
+
+      if (isValidDate) {
+        setCalendarDate(() => ({
+          day: Number(day),
+          month: Number(month),
+          year: Number(year),
+        }));
+      }
+    };
+
+    const isShowWarningMassage = !isValidateDate(inputValue) && inputValue.length === maxInputValueLength;
+
+    return (
+      <div>
+        <DateInput
+          inputValue={inputValue}
+          setDate={handleSetUserDate}
+          clearInput={handleClearInput}
+          changeValue={handleOnChangeValue}
+        />
+        {isShowWarningMassage && <ErrorText>Invalid date</ErrorText>}
+        <Component inputDate={calendarDate} view={view} minDate={minDate} maxDate={maxDate} />
+      </div>
+    );
   };
-
-  const handleClearInput = () => {
-    setInputValue('');
-    setCalendarDate(null);
-  };
-
-  const handleSetUserDate = () => {
-    if (isValidateDate(inputValue)) {
-      const date = inputValue.split('/');
-      setCalendarDate(() => ({
-        day: Number(date[0]),
-        month: Number(date[1]),
-        year: Number(date[2]),
-      }));
-    }
-  };
-
-  const isShowWarningMassage = !isValidateDate(inputValue) && inputValue.length === maxValueLength;
-
-  return (
-    <div>
-      <DateInput
-        inputValue={inputValue}
-        setDate={handleSetUserDate}
-        clearInput={handleClearInput}
-        changeValue={handleOnChangeValue}
-      />
-      {isShowWarningMassage && <ErrorMessage />}
-      <Component inputDate={calendarDate} />
-    </div>
-  );
 };
