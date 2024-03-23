@@ -3,7 +3,7 @@ import { NameDaysOfWeek } from '@components/Calendar/NameDaysOfWeek';
 import { NavigationBar } from '@components/Calendar/NavigationBar';
 import { DaysList, WrapperCalendar } from '@components/Calendar/styled';
 import { calendarView } from '@root/constants';
-import { CalendarView, IInputDate } from '@root/types';
+import { CalendarView, IInputDate, StartWeek } from '@root/types';
 import {
   getCalendarDataForMonth,
   getCalendarDataForWeek,
@@ -18,12 +18,13 @@ export interface ICalendarProps {
   maxDate: Date;
   minDate: Date;
   withWeekends: boolean;
+  startOfWeek: StartWeek;
 }
 
 // TODO: тудушки сделать здесь в календаре
 
 export const Calendar = memo(
-  ({ inputDate, maxDate, minDate, withWeekends, view = 'month' }: ICalendarProps) => {
+  ({ inputDate, maxDate, minDate, withWeekends, startOfWeek = 'Mo', view = 'month' }: ICalendarProps) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
 
     const selectedYear = selectedDate.getFullYear();
@@ -73,11 +74,18 @@ export const Calendar = memo(
 
     const getCalendarCells = () => {
       if (calendarView.year === view) return getCalendarItemsForYear();
-
+      /* eslint-disable */
       const calendarItemsDataWithWeekends =
         calendarView.month === view
-          ? getCalendarDataForMonth(selectedYear, selectedMonth)
-          : getCalendarDataForWeek(selectedYear, selectedMonth, selectedDate.getDate());
+          ? getCalendarDataForMonth(selectedYear, selectedMonth, startOfWeek, withWeekends)
+          : getCalendarDataForWeek(
+              selectedYear,
+              selectedMonth,
+              selectedDate.getDate(),
+              startOfWeek,
+              withWeekends,
+            );
+      /* eslint-enable */
 
       const calendarItemsData = withWeekends
         ? calendarItemsDataWithWeekends
@@ -108,7 +116,9 @@ export const Calendar = memo(
           month={calendarView.year !== view && selectedMonth}
         />
 
-        {calendarView.year !== view && <NameDaysOfWeek withWeekends={withWeekends} />}
+        {calendarView.year !== view && (
+          <NameDaysOfWeek startOfWeek={startOfWeek} withWeekends={withWeekends} />
+        )}
 
         <DaysList $view={view} $withWeekends={withWeekends}>
           {getCalendarCells()}

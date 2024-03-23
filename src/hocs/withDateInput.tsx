@@ -9,7 +9,7 @@ const maxInputValueLength = 10;
 
 export const withDateInput = (Component: ComponentType<ICalendarProps>, config: IDatePickerConfig) => {
   return function ComponentWithDateInput() {
-    const { view, maxDate, minDate, withWeekends } = config;
+    const { view, maxDate, minDate, withWeekends, startOfWeek } = config;
     const [inputValue, setInputValue] = useState('');
     const [calendarDate, setCalendarDate] = useState<null | IInputDate>(null);
 
@@ -62,6 +62,7 @@ export const withDateInput = (Component: ComponentType<ICalendarProps>, config: 
         />
         {isShowWarningMassage && <ErrorText>Invalid date</ErrorText>}
         <Component
+          startOfWeek={startOfWeek}
           inputDate={calendarDate}
           view={view}
           minDate={minDate}

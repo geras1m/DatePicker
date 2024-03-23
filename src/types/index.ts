@@ -6,6 +6,8 @@ export interface IInputDate {
 
 export type CalendarView = 'week' | 'month' | 'year';
 
+export type StartWeek = 'Mo' | 'Su';
+
 export interface ICalendarDate {
   date: number;
   month: number;
@@ -21,4 +23,5 @@ export interface IDatePickerConfig {
   minDate: Date;
   maxDate: Date;
   withWeekends: boolean;
+  startOfWeek: StartWeek;
 }

@@ -1,5 +1,5 @@
 import { holidays, listOfMonth } from '@root/constants';
-import { ICalendarDate, IInputDate } from '@root/types';
+import { ICalendarDate, IInputDate, StartWeek } from '@root/types';
 import { getCurrentDate } from '@utils/calendar/getCurrentDate';
 
 const overDaysInMonth = 32;
@@ -7,7 +7,12 @@ const countCellsInMonth = 42;
 const maxWeeksInMonth = 6;
 const daysInAWeek = 7;
 
-export const getCalendarDataForMonth = (year: number, month: number): ICalendarDate[] => {
+export const getCalendarDataForMonth = (
+  year: number,
+  month: number,
+  startWeek: StartWeek,
+  withWeekends: boolean,
+): ICalendarDate[] => {
   const { currentYear, currentMonth, currentDate } = getCurrentDate();
 
   const daysInPrevMonth = overDaysInMonth - new Date(year, month - 1, overDaysInMonth).getDate();
@@ -16,7 +21,11 @@ export const getCalendarDataForMonth = (year: number, month: number): ICalendarD
   const firstDayOfWeekInCurrentMonth = new Date(year, month, 1).getDay();
 
   let dayOfWeek = firstDayOfWeekInCurrentMonth - 1;
-  const countDaysInPrevMonth = firstDayOfWeekInCurrentMonth === 0 ? 6 : firstDayOfWeekInCurrentMonth - 1;
+
+  const toDifferentStartOfWeek = startWeek === 'Mo' || !withWeekends ? 1 : 0;
+  const endOfWeek = startWeek === 'Mo' ? 6 : 7;
+  const countDaysInPrevMonth =
+    firstDayOfWeekInCurrentMonth === 0 ? endOfWeek : firstDayOfWeekInCurrentMonth - toDifferentStartOfWeek;
 
   const daysPrevMonth = Array(countDaysInPrevMonth)
     .fill(daysInPrevMonth)
@@ -77,8 +86,14 @@ export const getCalendarDataForYear = (year: number, inputDate: IInputDate | nul
   });
 };
 
-export const getCalendarDataForWeek = (year: number, month: number, currentDay: number) => {
-  const allDaysOfMonth = getCalendarDataForMonth(year, month);
+export const getCalendarDataForWeek = (
+  year: number,
+  month: number,
+  currentDay: number,
+  startOfWeek: StartWeek,
+  withWeekends: boolean,
+) => {
+  const allDaysOfMonth = getCalendarDataForMonth(year, month, startOfWeek, withWeekends);
   const currentDayIndex = allDaysOfMonth.findIndex((day) => {
     return day.year && day.date === currentDay;
   });
