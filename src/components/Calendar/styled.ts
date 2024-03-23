@@ -9,7 +9,7 @@ interface IDaysListProps {
 
 export const WrapperCalendar = styled.div`
   width: 250px;
-  border: 1px solid #dddddd;
+  border: 1px solid ${({ theme }) => theme.colors.grey1};
   border-radius: 8px;
   padding: 10px;
   box-sizing: border-box;

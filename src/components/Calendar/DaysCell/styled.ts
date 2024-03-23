@@ -1,3 +1,4 @@
+import { mixinFlex } from '@components/ThemeProvider/styled';
 import styled from 'styled-components';
 
 interface ICellWrapperProps {
@@ -11,23 +12,24 @@ export const CellWrapper = styled.li<ICellWrapperProps>`
   list-style: none;
   width: 100%;
   height: 25px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: ${({ theme }) => theme.fontSizes.px14};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
   padding: 5px 0;
   border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border: none;
 
-  ${({ $isHoliday }) => $isHoliday && 'color: red'}
+  ${mixinFlex({ alignItem: 'center', justifyContent: 'center' })};
 
-  ${({ $isCurrentDay }) =>
+  ${({ $isHoliday, theme }) => $isHoliday && `color: ${theme.colors.red};`}
+
+  ${({ $isCurrentDay, theme }) =>
     $isCurrentDay &&
     `
-    background-color: #2F80ED; color: #FFFFFFFF;
+    background-color: ${theme.colors.blue}; color: ${theme.colors.white};
   `}
 
-  ${({ $isSelectedDay }) => $isSelectedDay && 'border: 1px solid'}
+  ${({ $isSelectedDay, theme }) =>
+    $isSelectedDay && `border: 1px solid ${theme.colors.black}; color: ${theme.colors.green};`}
 
-  ${({ $isSelectedMonth }) => !$isSelectedMonth && 'color: #AAAAAA'}
+  ${({ $isSelectedMonth, theme }) => !$isSelectedMonth && `color: ${theme.colors.grey};`}
 `;

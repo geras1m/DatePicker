@@ -1,14 +1,15 @@
+import { mixinFlex } from '@components/ThemeProvider/styled';
 import styled from 'styled-components';
 
 export const NameDaysOfWeekWrapper = styled.ul`
-  display: flex;
-  justify-content: space-between;
-  padding: 0;
+  padding-bottom: 10px;
+
+  ${mixinFlex({ alignItem: 'center', justifyContent: 'space-between' })};
 `;
 
 export const DayItem = styled.li`
   width: 100%;
-  font-weight: 700;
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
   text-align: center;
   list-style: none;
 `;
