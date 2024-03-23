@@ -51,7 +51,7 @@ export const Calendar = memo(
 
         setSelectedDate(() => new Date(year, month, day));
       },
-      [selectedDate, view],
+      [selectedDate, view, minDate, maxDate],
     );
 
     const getCalendarItemsForYear = () => {
@@ -59,7 +59,14 @@ export const Calendar = memo(
 
       return calendarMonth.map(({ month, isCurrent, name, isSelected }) => {
         return (
-          <DaysCell key={month} isMainCell isSelected={isSelected} isCurrent={isCurrent} content={name} />
+          <DaysCell
+            key={month}
+            isMainCell
+            isHoliday={false}
+            isSelected={isSelected}
+            isCurrent={isCurrent}
+            content={name}
+          />
         );
       });
     };
@@ -76,7 +83,7 @@ export const Calendar = memo(
         ? calendarItemsDataWithWeekends
         : getListOfDaysWithoutWeekends(calendarItemsDataWithWeekends);
 
-      return calendarItemsData.map(({ year, month, date, isCurrent, isActive }) => {
+      return calendarItemsData.map(({ year, month, date, isCurrent, isActive, isHoliday }) => {
         const isSelectedDay =
           inputDate && inputDate.year === year && inputDate.month - 1 === month && inputDate.day === date;
 
@@ -86,6 +93,7 @@ export const Calendar = memo(
             isMainCell={isActive}
             isSelected={isSelectedDay}
             isCurrent={isCurrent}
+            isHoliday={isHoliday}
             content={date}
           />
         );

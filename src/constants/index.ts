@@ -4,6 +4,8 @@ export const calendarView = {
   year: 'year',
 };
 
+export const holidays = [[1, 2, 7], [14], [8], [], [1, 9], [], [3], [], [1], [14, 21], [7], [25]];
+
 export const listOfMonth = [
   {
     name: 'Jan',

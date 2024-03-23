@@ -1,4 +1,4 @@
-import { listOfMonth } from '@root/constants';
+import { holidays, listOfMonth } from '@root/constants';
 import { ICalendarDate, IInputDate } from '@root/types';
 import { getCurrentDate } from '@utils/calendar/getCurrentDate';
 
@@ -27,6 +27,7 @@ export const getCalendarDataForMonth = (year: number, month: number): ICalendarD
         isActive: false,
         dayOfWeek: countDaysInPrevMonth - index,
         isCurrent: false,
+        isHoliday: false,
         year: null,
       };
     })
@@ -37,10 +38,11 @@ export const getCalendarDataForMonth = (year: number, month: number): ICalendarD
     .map((date, index) => {
       const dateDay = date + index;
       const isCurrent = currentYear === year && currentMonth === month && currentDate === dateDay;
+      const isHoliday = holidays[month].includes(dateDay);
 
       dayOfWeek = dayOfWeek >= 6 ? 0 : dayOfWeek + 1;
 
-      return { date: dateDay, isActive: true, dayOfWeek, isCurrent, month, year };
+      return { date: dateDay, isActive: true, isHoliday, dayOfWeek, isCurrent, month, year };
     });
 
   const countDaysForNextMonth = countCellsInMonth - (daysPrevMonth.length + daysCurrentMonth.length);
@@ -56,6 +58,7 @@ export const getCalendarDataForMonth = (year: number, month: number): ICalendarD
         isActive: false,
         dayOfWeek,
         isCurrent: false,
+        isHoliday: false,
         year: null,
       };
     });

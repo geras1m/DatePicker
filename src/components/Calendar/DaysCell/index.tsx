@@ -6,11 +6,17 @@ interface IDaysCell {
   isCurrent: boolean;
   isMainCell: boolean;
   isSelected: boolean;
+  isHoliday: boolean;
 }
 
-export const DaysCell = memo(({ isCurrent, isSelected, isMainCell, content }: IDaysCell) => {
+export const DaysCell = memo(({ isCurrent, isSelected, isMainCell, isHoliday, content }: IDaysCell) => {
   return (
-    <CellWrapper $isSelectedDay={isSelected} $isCurrentDay={isCurrent} $isSelectedMonth={isMainCell}>
+    <CellWrapper
+      $isSelectedDay={isSelected}
+      $isCurrentDay={isCurrent}
+      $isSelectedMonth={isMainCell}
+      $isHoliday={isHoliday}
+    >
       {content}
     </CellWrapper>
   );

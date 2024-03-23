@@ -4,6 +4,7 @@ interface ICellWrapperProps {
   $isCurrentDay: boolean;
   $isSelectedMonth: boolean;
   $isSelectedDay: boolean;
+  $isHoliday: boolean;
 }
 
 export const CellWrapper = styled.li<ICellWrapperProps>`
@@ -17,6 +18,8 @@ export const CellWrapper = styled.li<ICellWrapperProps>`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  ${({ $isHoliday }) => $isHoliday && 'color: red'}
 
   ${({ $isCurrentDay }) =>
     $isCurrentDay &&

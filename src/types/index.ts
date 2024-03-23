@@ -12,6 +12,7 @@ export interface ICalendarDate {
   isActive: boolean;
   dayOfWeek: number;
   isCurrent: boolean;
+  isHoliday: boolean;
   year: number;
 }
 
