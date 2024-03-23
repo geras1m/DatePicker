@@ -19,4 +19,5 @@ export interface IDatePickerConfig {
   view: CalendarView;
   minDate: Date;
   maxDate: Date;
+  withWeekends: boolean;
 }

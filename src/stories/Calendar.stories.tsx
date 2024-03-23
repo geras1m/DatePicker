@@ -24,4 +24,5 @@ PatePicker.args = {
   view: 'week',
   minDate: new Date(2024, 0, 1),
   maxDate: new Date(2025, 5, 1),
+  withWeekends: true,
 };
