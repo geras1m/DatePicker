@@ -1,1 +1,1 @@
-export { Calendar } from '@components/Calendar/index';
+export { DatePicker } from '@components/DatePicker';

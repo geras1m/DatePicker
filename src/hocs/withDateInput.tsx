@@ -1,7 +1,6 @@
-import { ICalendarProps } from '@components/Calendar/Calendar';
 import { DateInput } from '@components/DateInput';
 import { ErrorText } from '@components/DateInput/styled';
-import { IDatePickerConfig, IInputDate } from '@root/types';
+import { ICalendarProps, IDatePickerConfig, IInputDate } from '@root/types';
 import { isValidateDate } from '@utils/calendar/isValidDate';
 import { ChangeEvent, ComponentType, useState } from 'react';
 
@@ -50,7 +49,8 @@ export const withDateInput = (Component: ComponentType<ICalendarProps>, config: 
       }
     };
 
-    const isShowWarningMassage = !isValidateDate(inputValue) && inputValue.length === maxInputValueLength;
+    const isShowInvalidateWarningMassage =
+      !isValidateDate(inputValue) && inputValue.length === maxInputValueLength;
 
     return (
       <div>
@@ -60,7 +60,8 @@ export const withDateInput = (Component: ComponentType<ICalendarProps>, config: 
           clearInput={handleClearInput}
           changeValue={handleOnChangeValue}
         />
-        {isShowWarningMassage && <ErrorText>Invalid date</ErrorText>}
+        {isShowInvalidateWarningMassage && <ErrorText>Invalid date</ErrorText>}
+        {/* {isShowOverDateWarningMassage && <ErrorText>The date goes beyond</ErrorText>} */}
         <Component
           startOfWeek={startOfWeek}
           inputDate={calendarDate}

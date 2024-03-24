@@ -1,6 +1,7 @@
 import { holidays, listOfMonth } from '@root/constants';
 import { ICalendarDate, IInputDate, StartWeek } from '@root/types';
 import { getCurrentDate } from '@utils/calendar/getCurrentDate';
+import { getDaysWithTodosForMonth } from '@utils/calendar/localStorage';
 
 const overDaysInMonth = 32;
 const countCellsInMonth = 42;
@@ -27,20 +28,27 @@ export const getCalendarDataForMonth = (
   const countDaysInPrevMonth =
     firstDayOfWeekInCurrentMonth === 0 ? endOfWeek : firstDayOfWeekInCurrentMonth - toDifferentStartOfWeek;
 
+  const dateForPrevMonth = new Date(year, month - 1, 1);
+  const preMonth = dateForPrevMonth.getMonth();
+  const preYear = dateForPrevMonth.getFullYear();
+
   const daysPrevMonth = Array(countDaysInPrevMonth)
     .fill(daysInPrevMonth)
     .map((date, index) => {
       return {
         date: date - index,
-        month: month - 1,
+        month: preMonth,
         isActive: false,
         dayOfWeek: countDaysInPrevMonth - index,
         isCurrent: false,
         isHoliday: false,
-        year: null,
+        isThereTodo: false,
+        year: preYear,
       };
     })
     .reverse();
+
+  const daysWithTodo = getDaysWithTodosForMonth(month);
 
   const daysCurrentMonth = Array(daysInCurrentMonth)
     .fill(1)
@@ -48,13 +56,18 @@ export const getCalendarDataForMonth = (
       const dateDay = date + index;
       const isCurrent = currentYear === year && currentMonth === month && currentDate === dateDay;
       const isHoliday = holidays[month].includes(dateDay);
+      const isThereTodo = daysWithTodo.includes(dateDay);
 
       dayOfWeek = dayOfWeek >= 6 ? 0 : dayOfWeek + 1;
 
-      return { date: dateDay, isActive: true, isHoliday, dayOfWeek, isCurrent, month, year };
+      return { date: dateDay, isActive: true, isHoliday, isThereTodo, dayOfWeek, isCurrent, month, year };
     });
 
   const countDaysForNextMonth = countCellsInMonth - (daysPrevMonth.length + daysCurrentMonth.length);
+
+  const dateForNextMonth = new Date(year, month + 1, 1);
+  const nextMonth = dateForNextMonth.getMonth();
+  const nextYear = dateForNextMonth.getFullYear();
 
   const daysNextMonth = Array(countDaysForNextMonth)
     .fill(1)
@@ -63,12 +76,13 @@ export const getCalendarDataForMonth = (
 
       return {
         date: date + index,
-        month: month + 1,
+        month: nextMonth,
         isActive: false,
         dayOfWeek,
         isCurrent: false,
         isHoliday: false,
-        year: null,
+        isThereTodo: false,
+        year: nextYear,
       };
     });
 

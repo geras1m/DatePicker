@@ -2,8 +2,9 @@ import { DaysCell } from '@components/Calendar/DaysCell';
 import { NameDaysOfWeek } from '@components/Calendar/NameDaysOfWeek';
 import { NavigationBar } from '@components/Calendar/NavigationBar';
 import { DaysList, WrapperCalendar } from '@components/Calendar/styled';
+import { TodoModal } from '@components/TodoModal';
 import { calendarView } from '@root/constants';
-import { CalendarView, IInputDate, StartWeek } from '@root/types';
+import { ICalendarProps } from '@root/types';
 import {
   getCalendarDataForMonth,
   getCalendarDataForWeek,
@@ -12,20 +13,11 @@ import {
 import { getListOfDaysWithoutWeekends } from '@utils/calendar/getListOfDaysWithoutWeekends';
 import { memo, useCallback, useMemo, useState } from 'react';
 
-export interface ICalendarProps {
-  view: CalendarView;
-  inputDate: IInputDate | null;
-  maxDate: Date;
-  minDate: Date;
-  withWeekends: boolean;
-  startOfWeek: StartWeek;
-}
-
-// TODO: тудушки сделать здесь в календаре
-
 export const Calendar = memo(
   ({ inputDate, maxDate, minDate, withWeekends, startOfWeek = 'Mo', view = 'month' }: ICalendarProps) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [activeCellDate, setActiveCellDate] = useState('');
+    const [isOpenModal, setIsOpenModal] = useState(false);
 
     const selectedYear = selectedDate.getFullYear();
     const selectedMonth = selectedDate.getMonth();
@@ -55,6 +47,15 @@ export const Calendar = memo(
       [selectedDate, view, minDate, maxDate],
     );
 
+    const handleSelectCell = useCallback((year: number, month: number, day: number) => {
+      setActiveCellDate(`${day}/${month}/${year}`);
+      setIsOpenModal(true);
+    }, []);
+
+    const handleCloseModal = () => {
+      setIsOpenModal(false);
+    };
+
     const getCalendarItemsForYear = () => {
       const calendarMonth = getCalendarDataForYear(selectedYear, inputDate);
 
@@ -67,6 +68,8 @@ export const Calendar = memo(
             isSelected={isSelected}
             isCurrent={isCurrent}
             content={name}
+            handleActiveCell={null}
+            isThereTodo={false}
           />
         );
       });
@@ -91,7 +94,7 @@ export const Calendar = memo(
         ? calendarItemsDataWithWeekends
         : getListOfDaysWithoutWeekends(calendarItemsDataWithWeekends);
 
-      return calendarItemsData.map(({ year, month, date, isCurrent, isActive, isHoliday }) => {
+      return calendarItemsData.map(({ year, month, date, isCurrent, isActive, isHoliday, isThereTodo }) => {
         const isSelectedDay =
           inputDate && inputDate.year === year && inputDate.month - 1 === month && inputDate.day === date;
 
@@ -102,7 +105,9 @@ export const Calendar = memo(
             isSelected={isSelectedDay}
             isCurrent={isCurrent}
             isHoliday={isHoliday}
+            isThereTodo={isThereTodo}
             content={date}
+            handleActiveCell={() => handleSelectCell(year, month, date)}
           />
         );
       });
@@ -124,7 +129,7 @@ export const Calendar = memo(
           {getCalendarCells()}
         </DaysList>
 
-        {/* {здесь кнопка и добавление туду} */}
+        {isOpenModal && <TodoModal date={activeCellDate} closeModal={handleCloseModal} />}
       </WrapperCalendar>
     );
   },
