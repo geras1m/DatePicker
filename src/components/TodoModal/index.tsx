@@ -1,3 +1,4 @@
+import { CloseButton, ModalWrapper, Title } from '@components/TodoModal/styled';
 import { TodoInput } from '@components/TodoModal/TodoInput';
 import { Todos } from '@components/TodoModal/Todos';
 import {
@@ -38,13 +39,19 @@ export const TodoModal: FC<TodoModalProps> = ({ date, closeModal }) => {
     removeTodoFromLocalStorage(date, todosWithoutRemoveItem);
   };
 
+  const parseDate = date.split('/');
+  const month = String(+parseDate[1] + 1);
+  parseDate.splice(1, 1, month);
+  const ModalTitle = parseDate.join('/');
+
   return (
-    <div>
-      <button type='button' onClick={closeModal}>
-        close
-      </button>
+    <ModalWrapper>
+      <CloseButton type='button' onClick={closeModal}>
+        X
+      </CloseButton>
+      <Title>Date: {ModalTitle}</Title>
       <TodoInput value={inputValue} inputChange={handleInputChange} addTodo={addTodo} />
       <Todos todos={todos} removeTodo={handleRemoveTodo} />
-    </div>
+    </ModalWrapper>
   );
 };

@@ -8,6 +8,7 @@ interface IDaysListProps {
 }
 
 export const WrapperCalendar = styled.div`
+  position: relative;
   width: 250px;
   border: 1px solid ${({ theme }) => theme.colors.grey1};
   border-radius: 8px;

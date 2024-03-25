@@ -16,4 +16,42 @@ export const NavButton = styled.div`
   ${mixinFlex({ alignItem: 'center', justifyContent: 'center' })};
 `;
 
-export const MonthAndYear = styled.p``;
+export const MonthAndYear = styled.div`
+  position: relative;
+`;
+
+export const HintWrapper = styled.div`
+  position: absolute;
+  top: 2px;
+  right: -25px;
+`;
+
+export const Hint = styled.div`
+  font-size: 12px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.colors.grey1};
+  cursor: pointer;
+
+  ${mixinFlex({ alignItem: 'center', justifyContent: 'center' })};
+
+  &:hover ~ p {
+    visibility: visible;
+  }
+`;
+
+export const HintMessage = styled.p`
+  visibility: hidden;
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  padding: 5px;
+  font-size: 12px;
+  z-index: 5;
+  width: 80px;
+  border-radius: 8px 0 8px 8px;
+  transition-delay: 0.2s;
+
+  background-color: ${({ theme }) => theme.colors.grey1};
+`;

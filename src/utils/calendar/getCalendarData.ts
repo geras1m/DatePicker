@@ -48,7 +48,7 @@ export const getCalendarDataForMonth = (
     })
     .reverse();
 
-  const daysWithTodo = getDaysWithTodosForMonth(month);
+  const daysWithTodo = getDaysWithTodosForMonth(month, year);
 
   const daysCurrentMonth = Array(daysInCurrentMonth)
     .fill(1)

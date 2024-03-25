@@ -1,3 +1,4 @@
+import { TodoButton, TodosItem, TodosList, TodoText } from '@components/TodoModal/Todos/styled';
 import { FC } from 'react';
 
 interface TodoItemProps {
@@ -7,17 +8,17 @@ interface TodoItemProps {
 
 export const Todos: FC<TodoItemProps> = ({ todos, removeTodo }) => {
   return (
-    <ul>
+    <TodosList>
       {todos.map((todo, index) => {
         return (
-          <li key={todo}>
-            <span>{todo}</span>
-            <button type='button' onClick={() => removeTodo(index)}>
-              close
-            </button>
-          </li>
+          <TodosItem key={index}>
+            <TodoText>{todo}</TodoText>
+            <TodoButton type='button' onClick={() => removeTodo(index)}>
+              X
+            </TodoButton>
+          </TodosItem>
         );
       })}
-    </ul>
+    </TodosList>
   );
 };

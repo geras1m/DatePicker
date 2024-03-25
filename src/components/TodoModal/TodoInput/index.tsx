@@ -1,3 +1,4 @@
+import { AddButton, InputTodo, InputWrapper } from '@components/TodoModal/TodoInput/styled';
 import { ChangeEvent, FC } from 'react';
 
 interface TodoInputProps {
@@ -8,11 +9,11 @@ interface TodoInputProps {
 
 export const TodoInput: FC<TodoInputProps> = ({ value, inputChange, addTodo }) => {
   return (
-    <div>
-      <input type='text' value={value} onChange={inputChange} />
-      <button onClick={addTodo} type='button'>
-        add
-      </button>
-    </div>
+    <InputWrapper>
+      <InputTodo type='text' value={value} onChange={inputChange} placeholder='Your task' />
+      <AddButton onClick={addTodo} type='button'>
+        Add
+      </AddButton>
+    </InputWrapper>
   );
 };

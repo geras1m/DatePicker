@@ -1,14 +1,14 @@
 const todosKey = 'todos';
 
-export const getDaysWithTodosForMonth = (month: number) => {
+export const getDaysWithTodosForMonth = (month: number, year: number) => {
   const todosJSON = localStorage.getItem(todosKey);
   if (!todosJSON) return [];
 
   const todosParsed = JSON.parse(todosJSON);
 
   const dates = Object.keys(todosParsed).filter((date) => {
-    const monthTodo = Number(date.split('/')[1]);
-    return monthTodo === month && todosParsed[date].length !== 0;
+    const [, monthTodo, yearTodo] = date.split('/');
+    return Number(monthTodo) === month && Number(yearTodo) === year && todosParsed[date].length !== 0;
   });
 
   return dates.map((date) => Number(date.split('/')[0]));

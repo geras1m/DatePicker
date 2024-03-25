@@ -1,6 +1,13 @@
 import NextArrow from '@assets/NextArrow.svg';
 import PrevArrow from '@assets/PrevArrow.svg';
-import { MonthAndYear, NavButton, NavigationWrapper } from '@components/Calendar/NavigationBar/styled';
+import {
+  Hint,
+  HintMessage,
+  HintWrapper,
+  MonthAndYear,
+  NavButton,
+  NavigationWrapper,
+} from '@components/Calendar/NavigationBar/styled';
 import { memo } from 'react';
 
 export const monthMap = [
@@ -35,6 +42,10 @@ export const NavigationBar = memo(({ year, month, switchCalendar }: INavigationB
       </NavButton>
       <MonthAndYear>
         {monthMap[month]} {year}
+        <HintWrapper>
+          <Hint>?</Hint>
+          <HintMessage>Double-click on the date to add a task</HintMessage>
+        </HintWrapper>
       </MonthAndYear>
       <NavButton>
         <NextArrow onClick={switchToNext} />
