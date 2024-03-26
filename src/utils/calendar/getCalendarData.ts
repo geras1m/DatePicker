@@ -29,21 +29,21 @@ export const getCalendarDataForMonth = (
     firstDayOfWeekInCurrentMonth === 0 ? endOfWeek : firstDayOfWeekInCurrentMonth - toDifferentStartOfWeek;
 
   const dateForPrevMonth = new Date(year, month - 1, 1);
-  const preMonth = dateForPrevMonth.getMonth();
-  const preYear = dateForPrevMonth.getFullYear();
+  const prevMonth = dateForPrevMonth.getMonth();
+  const prevYear = dateForPrevMonth.getFullYear();
 
   const daysPrevMonth = Array(countDaysInPrevMonth)
     .fill(daysInPrevMonth)
     .map((date, index) => {
       return {
         date: date - index,
-        month: preMonth,
+        month: prevMonth,
         isActive: false,
         dayOfWeek: countDaysInPrevMonth - index,
         isCurrent: false,
         isHoliday: false,
         isThereTodo: false,
-        year: preYear,
+        year: prevYear,
       };
     })
     .reverse();
@@ -109,11 +109,15 @@ export const getCalendarDataForWeek = (
 ) => {
   const allDaysOfMonth = getCalendarDataForMonth(year, month, startOfWeek, withWeekends);
   const currentDayIndex = allDaysOfMonth.findIndex((day) => {
-    return day.year && day.date === currentDay;
+    return day.year === year && day.month === month && day.date === currentDay;
   });
-  for (let weekInMonth = 0; weekInMonth < maxWeeksInMonth; weekInMonth += 1) {
-    if (weekInMonth * daysInAWeek > currentDayIndex)
-      return allDaysOfMonth.splice((weekInMonth - 1) * daysInAWeek, daysInAWeek);
+  for (let weekInMonth = 0; weekInMonth <= maxWeeksInMonth; weekInMonth += 1) {
+    if (weekInMonth * daysInAWeek >= currentDayIndex) {
+      const startIndexWeek = (weekInMonth - 1) * daysInAWeek;
+      const endIndexWeek = startIndexWeek + daysInAWeek;
+
+      return allDaysOfMonth.slice(startIndexWeek, endIndexWeek);
+    }
   }
   return [];
 };

@@ -5,7 +5,7 @@ import { IDatePickerConfig } from '@root/types';
 import { FC } from 'react';
 
 export const DatePicker: FC<IDatePickerConfig> = (config) => {
-  const DataPicker = ConfigCalendar.getSimpleCalendar(config);
+  const DataPicker = ConfigCalendar.getSimpleCalendar(config); // название
 
   return (
     <ErrorBoundary>
