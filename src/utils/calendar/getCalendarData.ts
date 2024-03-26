@@ -32,23 +32,28 @@ export const getCalendarDataForMonth = (
   const prevMonth = dateForPrevMonth.getMonth();
   const prevYear = dateForPrevMonth.getFullYear();
 
+  const daysWithTodoPrevMonth = getDaysWithTodosForMonth(prevMonth, prevYear);
+
   const daysPrevMonth = Array(countDaysInPrevMonth)
     .fill(daysInPrevMonth)
     .map((date, index) => {
+      const dateDay = date - index;
+      const isThereTodo = daysWithTodoPrevMonth.includes(dateDay);
+
       return {
-        date: date - index,
+        date: dateDay,
         month: prevMonth,
         isActive: false,
         dayOfWeek: countDaysInPrevMonth - index,
         isCurrent: false,
         isHoliday: false,
-        isThereTodo: false,
+        isThereTodo,
         year: prevYear,
       };
     })
     .reverse();
 
-  const daysWithTodo = getDaysWithTodosForMonth(month, year);
+  const daysWithTodoCurrentMonth = getDaysWithTodosForMonth(month, year);
 
   const daysCurrentMonth = Array(daysInCurrentMonth)
     .fill(1)
@@ -56,7 +61,7 @@ export const getCalendarDataForMonth = (
       const dateDay = date + index;
       const isCurrent = currentYear === year && currentMonth === month && currentDate === dateDay;
       const isHoliday = holidays[month].includes(dateDay);
-      const isThereTodo = daysWithTodo.includes(dateDay);
+      const isThereTodo = daysWithTodoCurrentMonth.includes(dateDay);
 
       dayOfWeek = dayOfWeek >= 6 ? 0 : dayOfWeek + 1;
 
@@ -69,19 +74,23 @@ export const getCalendarDataForMonth = (
   const nextMonth = dateForNextMonth.getMonth();
   const nextYear = dateForNextMonth.getFullYear();
 
+  const daysWithTodoNextMonth = getDaysWithTodosForMonth(nextMonth, nextYear);
+
   const daysNextMonth = Array(countDaysForNextMonth)
     .fill(1)
     .map((date, index) => {
+      const dateDay = date + index;
+      const isThereTodo = daysWithTodoNextMonth.includes(dateDay);
       dayOfWeek = dayOfWeek >= 6 ? 0 : dayOfWeek + 1;
 
       return {
-        date: date + index,
+        date: dateDay,
         month: nextMonth,
         isActive: false,
         dayOfWeek,
         isCurrent: false,
         isHoliday: false,
-        isThereTodo: false,
+        isThereTodo,
         year: nextYear,
       };
     });
