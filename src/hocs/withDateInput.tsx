@@ -1,14 +1,14 @@
 import { DateInput } from '@components/DateInput';
 import { ErrorText } from '@components/DateInput/styled';
 import { ICalendarProps, IInputDate, ISimpleDatePickerConfig } from '@root/types';
-import { getFormattedInputValue } from '@utils/calendar/getFormattedInputValue';
+import { getFormatAndParseInputValue } from '@utils/calendar/getFormatAndParseInputValue';
 import { isValidateDate } from '@utils/calendar/isValidDate';
-import { ChangeEvent, ComponentType, useState } from 'react';
+import { ChangeEvent, ComponentType, memo, useState } from 'react';
 
 const maxInputValueLength = 10;
 
 export const withDateInput = (Component: ComponentType<ICalendarProps>, config: ISimpleDatePickerConfig) => {
-  return function ComponentWithDateInput() {
+  return memo(() => {
     const { view, maxDate, minDate, withWeekends, startOfWeek } = config;
     const [inputValue, setInputValue] = useState('');
     const [calendarDate, setCalendarDate] = useState<IInputDate>({
@@ -21,18 +21,22 @@ export const withDateInput = (Component: ComponentType<ICalendarProps>, config: 
       const { value } = event.target;
       if (value.length > 10) return;
 
-      const formattedValue = getFormattedInputValue(value);
+      const formattedValue = getFormatAndParseInputValue(value);
 
       setInputValue(() => formattedValue);
     };
 
     const handleClearInput = () => {
+      const { year, month, day } = calendarDate;
       setInputValue('');
-      setCalendarDate({
-        day: null,
-        month: null,
-        year: null,
-      });
+
+      if (year && month && day) {
+        setCalendarDate({
+          day: null,
+          month: null,
+          year: null,
+        });
+      }
     };
 
     const handleSetUserDate = () => {
@@ -54,14 +58,18 @@ export const withDateInput = (Component: ComponentType<ICalendarProps>, config: 
 
     return (
       <div>
-        <DateInput
-          inputValue={inputValue}
-          setDate={handleSetUserDate}
-          clearInput={handleClearInput}
-          changeValue={handleOnChangeValue}
-        />
-        {isShowInvalidateWarningMassage && <ErrorText>Invalid date</ErrorText>}
-        {/* {isShowOverDateWarningMassage && <ErrorText>The date goes beyond</ErrorText>} */}
+        <div>
+          Date
+          <DateInput
+            inputValue={inputValue}
+            setDate={handleSetUserDate}
+            clearInput={handleClearInput}
+            changeValue={handleOnChangeValue}
+          />
+          {isShowInvalidateWarningMassage && <ErrorText>Invalid date</ErrorText>}
+          {/* {isShowOverDateWarningMassage && <ErrorText>The date goes beyond</ErrorText>} */}
+        </div>
+
         <Component
           startOfWeek={startOfWeek}
           inputDate={calendarDate}
@@ -72,5 +80,5 @@ export const withDateInput = (Component: ComponentType<ICalendarProps>, config: 
         />
       </div>
     );
-  };
+  });
 };

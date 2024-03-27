@@ -2,6 +2,7 @@ import { mixinFlex } from '@components/ThemeProvider/styled';
 import styled from 'styled-components';
 
 export const NameDaysOfWeekWrapper = styled.ul`
+  margin: 0 10px;
   padding-bottom: 10px;
 
   ${mixinFlex({ alignItem: 'center', justifyContent: 'space-between' })};

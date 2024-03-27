@@ -6,6 +6,7 @@ import {
   getCalendarDataForWeek,
   getCalendarDataForYear,
 } from '@utils/calendar/getCalendarData';
+import { getCellValueForRange } from '@utils/calendar/getCellValueForRange';
 import { getListOfDaysWithoutWeekends } from '@utils/calendar/getListOfDaysWithoutWeekends';
 
 interface IGetCalendarCells {
@@ -17,6 +18,9 @@ interface IGetCalendarCells {
   withWeekends: boolean;
   startOfWeek: StartWeek;
   handleSelectCell: (year: number, month: number, date: number) => void;
+  handlePickRangeByCell: (year: number, month: number, date: number) => void;
+  startRange: string;
+  endRange: string;
 }
 
 const getCalendarCellsForYear = (selectedYear: number, inputDate: IInputDate) => {
@@ -31,8 +35,10 @@ const getCalendarCellsForYear = (selectedYear: number, inputDate: IInputDate) =>
         isSelected={isSelected}
         isCurrent={isCurrent}
         content={name}
+        handlePickRangeByCell={null}
         handleActiveCell={null}
         isThereTodo={false}
+        isSetRange={null}
       />
     );
   });
@@ -47,6 +53,9 @@ export const getCalendarCells = ({
   withWeekends,
   startOfWeek,
   handleSelectCell,
+  handlePickRangeByCell,
+  startRange,
+  endRange,
 }: IGetCalendarCells) => {
   if (calendarView.year === view) return getCalendarCellsForYear(selectedYear, inputDate);
 
@@ -63,6 +72,8 @@ export const getCalendarCells = ({
     const isSelectedDay =
       inputDate && inputDate.year === year && inputDate.month - 1 === month && inputDate.day === date;
 
+    const rangeValue = getCellValueForRange(startRange, endRange, year, month, date);
+
     return (
       <DaysCell
         key={`${date}${month}${year}`}
@@ -71,7 +82,9 @@ export const getCalendarCells = ({
         isCurrent={isCurrent}
         isHoliday={isHoliday}
         isThereTodo={isThereTodo}
+        isSetRange={rangeValue}
         content={date}
+        handlePickRangeByCell={() => handlePickRangeByCell && handlePickRangeByCell(year, month, date)}
         handleActiveCell={() => handleSelectCell(year, month, date)}
       />
     );

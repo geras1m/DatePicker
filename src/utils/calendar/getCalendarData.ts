@@ -119,6 +119,7 @@ export const getCalendarDataForWeek = (
   const currentDayIndex = allDaysOfMonth.findIndex((day) => {
     return day.year === year && day.month === month && day.date === currentDay;
   });
+
   for (let weekInMonth = 0; weekInMonth <= maxWeeksInMonth; weekInMonth += 1) {
     if (weekInMonth * daysInAWeek >= currentDayIndex) {
       const startIndexWeek = (weekInMonth - 1) * daysInAWeek;

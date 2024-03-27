@@ -1,16 +1,16 @@
 import { ErrorBoundary } from '@components/ErrorBoundary';
 import { ThemeProvider } from '@components/ThemeProvider';
 import { ConfigCalendar } from '@root/sevice/configCalendar';
-import { IDatePickerConfig } from '@root/types';
+import { IRangeDatePickerConfig } from '@root/types';
 import { FC } from 'react';
 
-export const DatePicker: FC<IDatePickerConfig> = (config) => {
-  const DataPicker = ConfigCalendar.getSimpleCalendar(config); // название
+export const DatePicker: FC<IRangeDatePickerConfig> = (config) => {
+  const DataPickerCalendar = ConfigCalendar.getDatePickerWithRange(config);
 
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <DataPicker />
+        <DataPickerCalendar />
       </ThemeProvider>
     </ErrorBoundary>
   );

@@ -2,6 +2,7 @@ import { mixinFlex } from '@components/ThemeProvider/styled';
 import styled from 'styled-components';
 
 export const NavigationWrapper = styled.div`
+  margin: 0 10px;
   padding-bottom: 20px;
 
   ${mixinFlex({ alignItem: 'center', justifyContent: 'space-between' })};

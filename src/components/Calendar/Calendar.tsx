@@ -1,11 +1,13 @@
 import { NameDaysOfWeek } from '@components/Calendar/NameDaysOfWeek';
 import { NavigationBar } from '@components/Calendar/NavigationBar';
 import { DaysList, WrapperCalendar } from '@components/Calendar/styled';
+import { ClearRangeButton } from '@components/RangeInputBlock/styled';
 import { TodoModal } from '@components/TodoModal';
+import { RangeContext } from '@hocs/withRange';
 import { calendarView } from '@root/constants';
 import { ICalendarProps } from '@root/types';
 import { getCalendarCells } from '@utils/calendar/getCalendarCells';
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useContext, useState } from 'react';
 
 export const Calendar = memo(
   ({ inputDate, maxDate, minDate, withWeekends, startOfWeek = 'Mo', view = 'month' }: ICalendarProps) => {
@@ -13,9 +15,14 @@ export const Calendar = memo(
     const [activeCellDate, setActiveCellDate] = useState('');
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [prevInputDate, setPrevInputDate] = useState(inputDate);
+    const rangeContext = useContext(RangeContext);
 
     const selectedYear = selectedDate.getFullYear();
     const selectedMonth = selectedDate.getMonth();
+
+    const [startRange, endRange] = rangeContext ? rangeContext.rangeStartAndEndDates : [null, null];
+    const handlePickRangeByCell = rangeContext ? rangeContext.handlePickRangeByCell : null;
+    const handleClearRange = rangeContext ? rangeContext.handleClearRange : null;
 
     if (
       inputDate.year !== prevInputDate.year ||
@@ -66,6 +73,9 @@ export const Calendar = memo(
       withWeekends,
       inputDate,
       handleSelectCell,
+      handlePickRangeByCell,
+      startRange,
+      endRange,
     });
 
     return (
@@ -83,6 +93,12 @@ export const Calendar = memo(
         <DaysList $view={view} $withWeekends={withWeekends}>
           {cellsList}
         </DaysList>
+
+        {rangeContext && handleClearRange && (
+          <ClearRangeButton type='button' onClick={handleClearRange}>
+            Clear
+          </ClearRangeButton>
+        )}
 
         {isOpenModal && <TodoModal date={activeCellDate} closeModal={handleCloseModal} />}
       </WrapperCalendar>

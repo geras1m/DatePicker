@@ -1,9 +1,8 @@
 import CalendarIcon from '@assets/CalendarIcon.svg';
 import ClearIcon from '@assets/ClearIcon.svg';
 import { CalendarButton, ClearButton, Input, InputWrapper } from '@components/DateInput/styled';
+import { placeholder } from '@root/constants';
 import { ChangeEvent, FC, KeyboardEvent } from 'react';
-
-const placeholder = 'DD/MM/YYYY';
 
 interface IDateInputProps {
   inputValue: string;

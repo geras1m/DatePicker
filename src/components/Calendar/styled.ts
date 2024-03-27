@@ -9,14 +9,16 @@ interface IDaysListProps {
 
 export const WrapperCalendar = styled.div`
   position: relative;
+  overflow: hidden;
   width: 250px;
   border: 1px solid ${({ theme }) => theme.colors.grey1};
   border-radius: 8px;
-  padding: 10px;
+  padding-top: 10px;
   box-sizing: border-box;
 `;
 
 export const DaysList = styled.ul<IDaysListProps>`
+  margin: 10px 10px;
   display: grid;
   padding: 0;
   justify-content: space-between;
