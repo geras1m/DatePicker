@@ -1,38 +1,38 @@
 import { DateInput } from '@components/DateInput';
 import { ErrorText } from '@components/DateInput/styled';
-import { ICalendarProps, IDatePickerConfig, IInputDate } from '@root/types';
+import { ICalendarProps, IInputDate, ISimpleDatePickerConfig } from '@root/types';
+import { getFormattedInputValue } from '@utils/calendar/getFormattedInputValue';
 import { isValidateDate } from '@utils/calendar/isValidDate';
 import { ChangeEvent, ComponentType, useState } from 'react';
 
 const maxInputValueLength = 10;
 
-export const withDateInput = (Component: ComponentType<ICalendarProps>, config: IDatePickerConfig) => {
+export const withDateInput = (Component: ComponentType<ICalendarProps>, config: ISimpleDatePickerConfig) => {
   return function ComponentWithDateInput() {
     const { view, maxDate, minDate, withWeekends, startOfWeek } = config;
     const [inputValue, setInputValue] = useState('');
-    const [calendarDate, setCalendarDate] = useState<null | IInputDate>(null);
+    const [calendarDate, setCalendarDate] = useState<IInputDate>({
+      day: null,
+      month: null,
+      year: null,
+    });
 
     const handleOnChangeValue = (event: ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       if (value.length > 10) return;
-      const dateFromValue = value.split('/').join('');
 
-      const getFormatValue = () => {
-        if (dateFromValue.length > 4) {
-          return `${dateFromValue.slice(0, 2)}/${dateFromValue.slice(2, 4)}/${dateFromValue.slice(4)}`;
-        }
-        if (dateFromValue.length > 2) {
-          return `${dateFromValue.slice(0, 2)}/${dateFromValue.slice(2)}`;
-        }
-        return dateFromValue;
-      };
+      const formattedValue = getFormattedInputValue(value);
 
-      setInputValue(() => getFormatValue());
+      setInputValue(() => formattedValue);
     };
 
     const handleClearInput = () => {
       setInputValue('');
-      setCalendarDate(null);
+      setCalendarDate({
+        day: null,
+        month: null,
+        year: null,
+      });
     };
 
     const handleSetUserDate = () => {

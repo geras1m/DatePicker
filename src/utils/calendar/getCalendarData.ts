@@ -20,7 +20,6 @@ export const getCalendarDataForMonth = (
   const daysInCurrentMonth = overDaysInMonth - new Date(year, month, overDaysInMonth).getDate();
 
   const firstDayOfWeekInCurrentMonth = new Date(year, month, 1).getDay();
-
   let dayOfWeek = firstDayOfWeekInCurrentMonth - 1;
 
   const toDifferentStartOfWeek = startWeek === 'Mo' || !withWeekends ? 1 : 0;

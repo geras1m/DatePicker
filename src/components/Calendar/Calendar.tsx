@@ -1,30 +1,31 @@
-import { DaysCell } from '@components/Calendar/DaysCell';
 import { NameDaysOfWeek } from '@components/Calendar/NameDaysOfWeek';
 import { NavigationBar } from '@components/Calendar/NavigationBar';
 import { DaysList, WrapperCalendar } from '@components/Calendar/styled';
 import { TodoModal } from '@components/TodoModal';
 import { calendarView } from '@root/constants';
 import { ICalendarProps } from '@root/types';
-import {
-  getCalendarDataForMonth,
-  getCalendarDataForWeek,
-  getCalendarDataForYear,
-} from '@utils/calendar/getCalendarData';
-import { getListOfDaysWithoutWeekends } from '@utils/calendar/getListOfDaysWithoutWeekends';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { getCalendarCells } from '@utils/calendar/getCalendarCells';
+import { memo, useCallback, useState } from 'react';
 
 export const Calendar = memo(
   ({ inputDate, maxDate, minDate, withWeekends, startOfWeek = 'Mo', view = 'month' }: ICalendarProps) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [activeCellDate, setActiveCellDate] = useState('');
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const [prevInputDate, setPrevInputDate] = useState(inputDate);
 
     const selectedYear = selectedDate.getFullYear();
     const selectedMonth = selectedDate.getMonth();
 
-    useMemo(() => {
-      if (inputDate) setSelectedDate(new Date(`${inputDate.month}/${inputDate.day}/${inputDate.year}`));
-    }, [inputDate]);
+    if (
+      inputDate.year !== prevInputDate.year ||
+      inputDate.month !== prevInputDate.month ||
+      inputDate.day !== prevInputDate.day
+    ) {
+      const { year, month, day } = inputDate;
+      if (year && month && day) setSelectedDate(new Date(`${month}/${day}/${year}`));
+      setPrevInputDate(inputDate);
+    }
 
     const handleSwitchNextOrPrevCalendar = useCallback(
       (direction: 'next' | 'prev') => {
@@ -56,62 +57,16 @@ export const Calendar = memo(
       setIsOpenModal(false);
     };
 
-    const getCalendarItemsForYear = () => {
-      const calendarMonth = getCalendarDataForYear(selectedYear, inputDate);
-
-      return calendarMonth.map(({ month, isCurrent, name, isSelected }) => {
-        return (
-          <DaysCell
-            key={month}
-            isMainCell
-            isHoliday={false}
-            isSelected={isSelected}
-            isCurrent={isCurrent}
-            content={name}
-            handleActiveCell={null}
-            isThereTodo={false}
-          />
-        );
-      });
-    };
-
-    const getCalendarCells = () => {
-      if (calendarView.year === view) return getCalendarItemsForYear();
-      /* eslint-disable */
-      const calendarItemsDataWithWeekends =
-        calendarView.month === view
-          ? getCalendarDataForMonth(selectedYear, selectedMonth, startOfWeek, withWeekends)
-          : getCalendarDataForWeek(
-              selectedYear,
-              selectedMonth,
-              selectedDate.getDate(),
-              startOfWeek,
-              withWeekends,
-            );
-      /* eslint-enable */
-
-      const calendarItemsData = withWeekends
-        ? calendarItemsDataWithWeekends
-        : getListOfDaysWithoutWeekends(calendarItemsDataWithWeekends);
-
-      return calendarItemsData.map(({ year, month, date, isCurrent, isActive, isHoliday, isThereTodo }) => {
-        const isSelectedDay =
-          inputDate && inputDate.year === year && inputDate.month - 1 === month && inputDate.day === date;
-
-        return (
-          <DaysCell
-            key={`${date}${month}${year}`}
-            isMainCell={isActive}
-            isSelected={isSelectedDay}
-            isCurrent={isCurrent}
-            isHoliday={isHoliday}
-            isThereTodo={isThereTodo}
-            content={date}
-            handleActiveCell={() => handleSelectCell(year, month, date)}
-          />
-        );
-      });
-    };
+    const cellsList = getCalendarCells({
+      view,
+      selectedYear,
+      selectedMonth,
+      selectedDate: selectedDate.getDate(),
+      startOfWeek,
+      withWeekends,
+      inputDate,
+      handleSelectCell,
+    });
 
     return (
       <WrapperCalendar>
@@ -126,7 +81,7 @@ export const Calendar = memo(
         )}
 
         <DaysList $view={view} $withWeekends={withWeekends}>
-          {getCalendarCells()}
+          {cellsList}
         </DaysList>
 
         {isOpenModal && <TodoModal date={activeCellDate} closeModal={handleCloseModal} />}
